@@ -1,14 +1,46 @@
-import { motion } from "motion/react";
+import { motion, AnimatePresence } from "motion/react";
+import { useState } from "react";
+import { Plus, Minus } from "lucide-react";
 
 export function AboutSection() {
   const services = [
-    "WEB3_DEVELOPMENT",
-    "BRAND_IDENTITY",
-    "DIGITAL_PRODUCTS",
-    "VENTURE_BUILDING",
-    "CREATIVE_DIRECTION",
-    "INFRASTRUCTURE",
+    {
+      title: "WEB3_DEVELOPMENT",
+      description: "Smart contracts, DApps, and blockchain infrastructure. We build secure, scalable Web3 solutions that bridge the gap between traditional web and decentralized systems.",
+      tools: ["Solidity", "Rust", "React", "ethers.js", "Hardhat"]
+    },
+    {
+      title: "BRAND_IDENTITY",
+      description: "Complete visual systems from logo to motion design. We create bold, memorable identities that challenge conventions and stand out in crowded markets.",
+      tools: ["Figma", "After Effects", "Illustrator", "Blender", "Typography"]
+    },
+    {
+      title: "DIGITAL_PRODUCTS",
+      description: "End-to-end product development from concept to launch. User-centric design meets technical excellence to create products people actually want to use.",
+      tools: ["React", "Next.js", "TypeScript", "Tailwind", "Framer Motion"]
+    },
+    {
+      title: "VENTURE_BUILDING",
+      description: "Strategic planning and execution for new ventures. We help founders validate ideas, build MVPs, and scale products through data-driven iteration.",
+      tools: ["Strategy", "Market Research", "MVP Development", "Growth Hacking"]
+    },
+    {
+      title: "CREATIVE_DIRECTION",
+      description: "Vision and leadership for creative projects. We guide teams to produce work that's not just beautiful, but meaningful and impactful.",
+      tools: ["Art Direction", "Concept Development", "Team Leadership", "Quality Assurance"]
+    },
+    {
+      title: "INFRASTRUCTURE",
+      description: "Robust backend systems and DevOps practices. We build the invisible foundation that makes everything else possible and reliable.",
+      tools: ["AWS", "Docker", "Kubernetes", "CI/CD", "Monitoring"]
+    },
   ];
+
+  const [expandedService, setExpandedService] = useState<number | null>(null);
+
+  const toggleService = (index: number) => {
+    setExpandedService(expandedService === index ? null : index);
+  };
 
   return (
     <section className="relative min-h-screen py-32 px-8" id="about">
@@ -91,37 +123,87 @@ export function AboutSection() {
             <div className="font-mono text-sm opacity-50 mb-6">
               {'> CAPABILITIES'}
             </div>
-            <div className="space-y-4">
+            <div className="space-y-0">
               {services.map((service, index) => (
                 <motion.div
-                  key={service}
-                  className="group relative"
+                  key={service.title}
+                  className="group relative border-b border-[#333333]"
                   initial={{ opacity: 0, x: 20 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: index * 0.1, duration: 0.6 }}
                 >
-                  <div className="flex items-center justify-between py-4 border-b border-[#333333] cursor-pointer">
-                    <div className="flex items-center gap-4">
+                  {/* Header */}
+                  <div 
+                    className="flex items-center justify-between py-4 cursor-pointer"
+                    onClick={() => toggleService(index)}
+                  >
+                    <div className="flex items-center gap-4 flex-1">
                       <span className="font-mono text-xs opacity-30">
                         {String(index + 1).padStart(2, '0')}
                       </span>
                       <motion.span
                         className="font-mono tracking-wider"
-                        whileHover={{ x: 4 }}
+                        animate={{
+                          x: expandedService === index ? 4 : 0,
+                        }}
                         style={{ fontSize: 'clamp(1rem, 2vw, 1.25rem)' }}
                       >
-                        {service}
+                        {service.title}
                       </motion.span>
                     </div>
                     <motion.div
                       className="w-6 h-6 border border-[#333333] flex items-center justify-center"
-                      whileHover={{ rotate: 45, scale: 1.2 }}
-                      transition={{ duration: 0.2 }}
+                      animate={{
+                        rotate: expandedService === index ? 180 : 0,
+                        borderColor: expandedService === index ? '#F0F0F0' : '#333333',
+                      }}
+                      transition={{ duration: 0.3 }}
                     >
-                      <div className="w-3 h-px bg-[#F0F0F0]" />
+                      {expandedService === index ? (
+                        <Minus className="w-3 h-3" />
+                      ) : (
+                        <Plus className="w-3 h-3" />
+                      )}
                     </motion.div>
                   </div>
+
+                  {/* Dropdown Content */}
+                  <AnimatePresence>
+                    {expandedService === index && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.3, ease: "easeInOut" }}
+                        className="overflow-hidden"
+                      >
+                        <div className="pb-6 pl-12 pr-4">
+                          {/* Description */}
+                          <p className="text-sm opacity-70 mb-4 leading-relaxed">
+                            {service.description}
+                          </p>
+
+                          {/* Tools/Tech */}
+                          <div className="flex flex-wrap gap-2">
+                            {service.tools.map((tool, toolIndex) => (
+                              <motion.span
+                                key={tool}
+                                className="px-2 py-1 border border-[#333333] font-mono text-xs"
+                                initial={{ opacity: 0, scale: 0.8 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                transition={{ delay: toolIndex * 0.05 }}
+                              >
+                                {tool}
+                              </motion.span>
+                            ))}
+                          </div>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+
+                  {/* Hover Background Effect */}
                   <motion.div
                     className="absolute inset-0 bg-[#F0F0F0] opacity-0 group-hover:opacity-5 pointer-events-none"
                     initial={false}

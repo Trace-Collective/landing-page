@@ -1,14 +1,38 @@
-import { motion } from "motion/react";
+import { motion, AnimatePresence } from "motion/react";
 import { useState } from "react";
+import { Plus, Minus, ExternalLink } from "lucide-react";
 
 export function ContactSection() {
   const [focusedField, setFocusedField] = useState<string | null>(null);
+  const [expandedSocial, setExpandedSocial] = useState<number | null>(null);
 
   const socialLinks = [
-    { name: "TWITTER", handle: "@trace_collective" },
-    { name: "GITHUB", handle: "github.com/trace" },
-    { name: "DISCORD", handle: "discord.gg/trace" },
+    { 
+      name: "TWITTER", 
+      handle: "@trace_collective",
+      url: "https://twitter.com/trace_collective",
+      followers: "12.5K",
+      description: "Daily updates on our projects, thoughts on Web3, design experiments, and behind-the-scenes of our creative process."
+    },
+    { 
+      name: "GITHUB", 
+      handle: "github.com/trace",
+      url: "https://github.com/trace",
+      followers: "8.2K",
+      description: "Open-source contributions, experimental frameworks, and code repositories. All our public work lives here."
+    },
+    { 
+      name: "DISCORD", 
+      handle: "discord.gg/trace",
+      url: "https://discord.gg/trace",
+      followers: "5.8K",
+      description: "Join our community of builders, creators, and innovators. Collaborate, share ideas, and get exclusive updates."
+    },
   ];
+
+  const toggleSocial = (index: number) => {
+    setExpandedSocial(expandedSocial === index ? null : index);
+  };
 
   return (
     <section className="relative min-h-screen py-32 px-8" id="contact">
@@ -177,36 +201,94 @@ export function ContactSection() {
               <div className="font-mono text-sm opacity-50 mb-6">
                 {'> SOCIAL_CHANNELS'}
               </div>
-              <div className="space-y-4">
+              <div className="space-y-0">
                 {socialLinks.map((link, index) => (
                   <motion.div
                     key={link.name}
-                    className="group relative"
+                    className="group relative border-b border-[#333333]"
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: index * 0.1, duration: 0.6 }}
                   >
-                    <div className="flex items-center justify-between py-3 border-b border-[#333333] cursor-pointer">
-                      <div className="flex items-center gap-4">
+                    {/* Header */}
+                    <div 
+                      className="flex items-center justify-between py-3 cursor-pointer"
+                      onClick={() => toggleSocial(index)}
+                    >
+                      <div className="flex items-center gap-4 flex-1">
                         <span className="font-mono text-sm opacity-30 w-8">
                           {String(index + 1).padStart(2, '0')}
                         </span>
                         <div>
-                          <div className="font-mono">{link.name}</div>
+                          <motion.div 
+                            className="font-mono"
+                            animate={{
+                              x: expandedSocial === index ? 2 : 0,
+                            }}
+                          >
+                            {link.name}
+                          </motion.div>
                           <div className="font-mono text-xs opacity-50">{link.handle}</div>
                         </div>
                       </div>
                       <motion.div
-                        className="w-6 h-6 border border-[#333333]"
-                        whileHover={{ rotate: 45, scale: 1.2 }}
-                        transition={{ duration: 0.2 }}
+                        className="w-6 h-6 border border-[#333333] flex items-center justify-center"
+                        animate={{
+                          rotate: expandedSocial === index ? 180 : 0,
+                          borderColor: expandedSocial === index ? '#F0F0F0' : '#333333',
+                        }}
+                        transition={{ duration: 0.3 }}
                       >
-                        <div className="w-full h-full flex items-center justify-center">
-                          <div className="w-3 h-px bg-[#F0F0F0]" />
-                        </div>
+                        {expandedSocial === index ? (
+                          <Minus className="w-3 h-3" />
+                        ) : (
+                          <Plus className="w-3 h-3" />
+                        )}
                       </motion.div>
                     </div>
+
+                    {/* Dropdown Content */}
+                    <AnimatePresence>
+                      {expandedSocial === index && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: "auto", opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.3, ease: "easeInOut" }}
+                          className="overflow-hidden"
+                        >
+                          <div className="pb-4 pl-12 pr-4">
+                            {/* Description */}
+                            <p className="text-xs opacity-70 mb-4 leading-relaxed">
+                              {link.description}
+                            </p>
+
+                            {/* Stats & Link */}
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-4">
+                                <div className="font-mono text-xs opacity-50">
+                                  {link.followers} FOLLOWERS
+                                </div>
+                              </div>
+                              <motion.a
+                                href={link.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex items-center gap-2 px-3 py-1 border border-[#333333] font-mono text-xs hover:border-[#F0F0F0] hover:bg-[#F0F0F0] hover:text-black transition-colors"
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                              >
+                                <span>VISIT</span>
+                                <ExternalLink className="w-3 h-3" />
+                              </motion.a>
+                            </div>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+
+                    {/* Hover Background Effect */}
                     <motion.div
                       className="absolute inset-0 bg-[#F0F0F0] opacity-0 group-hover:opacity-5 pointer-events-none"
                       initial={false}
