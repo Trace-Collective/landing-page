@@ -178,7 +178,7 @@ export function AboutSection() {
                         transition={{ duration: 0.3, ease: "easeInOut" }}
                         className="overflow-hidden"
                       >
-                        <div className="pb-6 pl-12 pr-4">
+                        <div style={{ paddingLeft: '4rem', paddingRight: '4rem', paddingBottom: '2.5rem' }}>
                           {/* Description */}
                           <p className="text-sm opacity-70 mb-4 leading-relaxed">
                             {service.description}

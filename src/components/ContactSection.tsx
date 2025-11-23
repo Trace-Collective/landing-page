@@ -258,7 +258,7 @@ export function ContactSection() {
                           transition={{ duration: 0.3, ease: "easeInOut" }}
                           className="overflow-hidden"
                         >
-                          <div className="pb-4 pl-12 pr-4">
+                          <div style={{ paddingLeft: '4rem', paddingRight: '4rem', paddingBottom: '2.5rem' }}>
                             {/* Description */}
                             <p className="text-xs opacity-70 mb-4 leading-relaxed">
                               {link.description}

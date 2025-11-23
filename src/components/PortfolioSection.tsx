@@ -234,7 +234,7 @@ export function PortfolioSection({ onProjectClick }: PortfolioSectionProps) {
                 </div>
 
                 {/* Project Title */}
-                <div className="col-span-5 md:col-span-6">
+                <div className="col-span-5 md:col-span-5">
                   <motion.h3
                     className="font-mono tracking-wider relative inline-block"
                     whileHover={{ x: 8 }}
